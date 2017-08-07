@@ -7,6 +7,18 @@ ol, ul {
     padding-left: 30px;
 }
 
+a {
+    color: dodgerblue;
+}
+
+a:hover {
+    color: #0b294f;
+}
+
+a:visited {
+    color: dodgerblue;
+}
+
 .game {
     display: flex;
     flex-direction: row;
@@ -14,6 +26,7 @@ ol, ul {
 
 .game-info {
     margin-left: 20px;
+    width: 20rem;
 }
 
 .board-row:after {
@@ -45,6 +58,14 @@ ol, ul {
     outline: none;
 }
 
+.square:hover {
+    background: #e8e8e8;
+}
+
 .kbd-navigation .square:focus {
     background: #ddd;
+}
+
+.selected {
+    font-weight: bold;
 }
