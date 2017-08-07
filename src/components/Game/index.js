@@ -6,52 +6,116 @@ import './index.css'
 
 
 export default class Game extends React.Component {
+    size = 5;
+
     constructor() {
         super();
         this.state = {
             history: [{
-                squares: new Array(9).fill(null),
+                squares: new Array(this.size).fill(new Array(this.size).fill(null)),
+                pos: null,
+                player: null,
             }],
             stepNumber: 0,
             xIsNext: true,
         };
     }
 
-    static calculateWinner(squares) {
-        const lines = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6],
-        ];
-        for (let i = 0; i < lines.length; i++) {
-            const [a, b, c] = lines[i];
-            if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                return squares[a];
-            }
-        }
+    calculateWinner(squares) {
+        const rows = this.calcRows(squares);
+        if (rows) return rows;
+
+        const cols = this.calcCols(squares);
+        if (cols) return cols;
+
+        const diags = this.calcDiags(squares);
+        if (diags) return diags;
+
         return null;
     }
 
-    handleClick(i) {
+    calcRows(squares) {
+        for (let y = 0; y < this.size; y++) {
+            let a = null;
+            let p = null;
+            const cells = [];
+            let i = 0;
+            for (let x = 0; x < this.size; x++) {
+                p = squares[y][x];
+                if (x === 0 || (a && a === p)) {
+                    a = p;
+                    i++;
+                    cells.push([x, y]);
+                } else break;
+            }
+            if (i === this.size)
+                return {player: p, winners: cells}
+        }
+    }
+
+    calcCols(squares) {
+        for (let x = 0; x < this.size; x++) {
+            let a = null;
+            const cells = [];
+            let p = null;
+            let i = 0;
+            for (let y = 0; y < this.size; y++) {
+                p = squares[y][x];
+                if (y === 0 || (a && a === p)) {
+                    a = p;
+                    i++;
+                    cells.push([x, y])
+                } else break;
+            }
+            if (i === this.size)
+                return {player: p, winners: cells}
+        }
+    }
+
+    calcDiags(squares) {
+        const cells1 = [];
+        const cells2 = [];
+        let p1 = null;
+        let p2 = null;
+        for (let i = 0; i < this.size; i++) {
+            const c1 = squares[i][i];
+            const c2 = squares[i][this.size - i - 1];
+            if (i === 0 || (p1 && p1 === c1)) {
+                p1 = c1;
+                cells1.push([i, i])
+            }
+            if (i === 0 || (p2 && p2 === c2)) {
+                p2 = c2;
+                cells2.push([i, this.size - i - 1])
+            }
+        }
+
+        if (cells1.length === this.size)
+            return {player: p1, winners: cells1};
+        if (cells2.length === this.size)
+            return {player: p2, winners: cells2};
+        return null;
+    }
+
+    handleClick(x, y) {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
-        const squares = current.squares.slice();
-        if (Game.calculateWinner(squares) || squares[i]) {
+        const squares = JSON.parse(JSON.stringify(current.squares));
+        const player = this.state.xIsNext ? 'X' : 'O';
+
+        if (this.calculateWinner(squares) || squares[y][x]) {
             return;
         }
-        squares[i] = this.state.xIsNext ? 'X' : 'O';
-        this.setState({
+        squares[y][x] = player;
+        this.setState((prevState) => ({
             history: history.concat([{
-                squares,
+                squares: squares,
+                pos: [x, y],
+                player: player,
             }]),
             stepNumber: history.length,
-            xIsNext: !this.state.xIsNext,
-        });
+            xIsNext: !prevState.xIsNext,
+        }));
     }
 
     jumpTo(move) {
@@ -65,23 +129,23 @@ export default class Game extends React.Component {
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
-        const winner = Game.calculateWinner(current.squares);
+        const win = this.calculateWinner(current.squares);
 
         const moves = history.map((history, index) => {
-            const desc = index ?
-                'Move #' + index :
-                'Game start';
-            const clas = this.state.stepNumber === index ? 'selected' : null;
+            const desc = index
+                ? `${history.player} moved to (${history.pos[0]}, ${history.pos[1]})`
+                : 'Game start';
+            const selected = this.state.stepNumber === index ? 'selected' : null;
             return (
-                <li key={index} className={clas}>
+                <li key={index} className={selected}>
                     <a href="#" onClick={() => this.jumpTo(index)}>{desc}</a>
                 </li>
             );
         });
 
         let status;
-        if (winner) {
-            status = 'Winner: ' + winner;
+        if (win) {
+            status = 'Winner: ' + win.player;
         } else {
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
@@ -89,8 +153,10 @@ export default class Game extends React.Component {
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board squares={current.squares}
-                           onClick={(i) => this.handleClick(i)}/>
+                    <Board size={this.size}
+                           winners={win && win.winners}
+                           squares={current.squares}
+                           onClick={(x, y) => this.handleClick(x, y)}/>
                 </div>
                 <div className="game-info">
                     <div className="status">{status}</div>

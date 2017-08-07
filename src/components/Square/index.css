@@ -20,3 +20,7 @@
 .square:hover {
     background: #e8e8e8;
 }
+
+.winner {
+    color: #008c00;
+}
