@@ -6,10 +6,9 @@ import './index.css'
 
 
 export default class Game extends React.Component {
-    size = 5;
-
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        this.size = this.props.size;
         this.state = {
             history: [{
                 squares: new Array(this.size).fill(new Array(this.size).fill(null)),
