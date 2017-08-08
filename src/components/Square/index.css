@@ -10,17 +10,17 @@
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 34px;
+    width: 34px;
 }
 
 .square:focus {
-  outline: none;
+    outline: none;
 }
 
 .square:hover {
-  background: #e8e8e8;
+    background: #e8e8e8;
 }
 
 .winner {
-  color: #008c00;
+    color: #008c00;
 }

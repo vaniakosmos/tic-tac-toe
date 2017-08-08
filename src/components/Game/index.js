@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 
 import Board from '../Board'
@@ -6,21 +7,36 @@ import './index.css'
 
 
 export default class Game extends React.Component {
-    constructor(props) {
+    size = 0;
+
+    props: {
+        size: number,
+    };
+    state: {
+        history: Array<{
+            squares: Array<Array<string | null>>,
+            pos: [number, number],
+            player: string,
+        }>,
+        stepNumber: number,
+        xIsNext: boolean,
+    };
+
+    constructor(props: any) {
         super(props);
         this.size = this.props.size;
         this.state = {
             history: [{
                 squares: new Array(this.size).fill(new Array(this.size).fill(null)),
-                pos: null,
-                player: null,
+                pos: [-1, -1],
+                player: '',
             }],
             stepNumber: 0,
             xIsNext: true,
         };
     }
 
-    calculateWinner(squares) {
+    calculateWinner(squares: Array<any>): { player: string | null, winners: Array<any> } | null {
         const rows = this.calcRows(squares);
         if (rows) return rows;
 
@@ -33,7 +49,7 @@ export default class Game extends React.Component {
         return null;
     }
 
-    calcRows(squares) {
+    calcRows(squares: Array<any>) {
         for (let y = 0; y < this.size; y++) {
             let a = null;
             let p = null;
@@ -52,7 +68,7 @@ export default class Game extends React.Component {
         }
     }
 
-    calcCols(squares) {
+    calcCols(squares: Array<any>) {
         for (let x = 0; x < this.size; x++) {
             let a = null;
             const cells = [];
@@ -71,7 +87,7 @@ export default class Game extends React.Component {
         }
     }
 
-    calcDiags(squares) {
+    calcDiags(squares: Array<any>) {
         const cells1 = [];
         const cells2 = [];
         let p1 = null;
@@ -96,7 +112,7 @@ export default class Game extends React.Component {
         return null;
     }
 
-    handleClick(x, y) {
+    handleClick(x: number, y: number) {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = JSON.parse(JSON.stringify(current.squares));
@@ -117,7 +133,7 @@ export default class Game extends React.Component {
         }));
     }
 
-    jumpTo(move) {
+    jumpTo(move: number) {
         this.setState({
             stepNumber: move,
             xIsNext: move % 2 === 0,
@@ -132,18 +148,18 @@ export default class Game extends React.Component {
 
         const moves = history.map((history, index) => {
             const desc = index
-                ? `${history.player} moved to (${history.pos[0]}, ${history.pos[1]})`
+                ? `${history.player} moved to (${history.pos[0]}, ${history.pos[1]})`  // don't show initial
                 : 'Game start';
             const selected = this.state.stepNumber === index ? 'selected' : null;
             return (
                 <li key={index} className={selected}>
-                    <a href="#" onClick={() => this.jumpTo(index)}>{desc}</a>
+                    <span className="history-link" onClick={() => this.jumpTo(index)}>{desc}</span>
                 </li>
             );
         });
 
         let status;
-        if (win) {
+        if (win && win.player) {
             status = 'Winner: ' + win.player;
         } else {
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');

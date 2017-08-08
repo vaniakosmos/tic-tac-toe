@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "classnames": "^2.2.5",
+    "flow-bin": "^0.52.0",
     "node-sass-chokidar": "0.0.3",
     "npm-run-all": "^4.0.2",
     "prop-types": "^15.5.10",
@@ -18,6 +19,8 @@
     "start": "npm-run-all -p watch-css start-js",
     "build": "npm run build-css && react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "flow": "flow",
+    "flow-stop": "flow stop",
     "eject": "react-scripts eject"
   }
 }

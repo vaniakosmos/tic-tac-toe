@@ -1,11 +1,16 @@
+// @flow
 import React from 'react';
 import classNames from 'classnames'
-import PropTypes from 'prop-types';
 
 import './index.css'
 
+type Props = {
+    value: string | null,
+    onClick: () => void,
+    winner?: boolean,
+}
 
-export default function Square(props) {
+export default function Square(props: Props) {
     const winner = props.winner ? 'winner' : null;
     return (
         <button className={classNames(["square", winner])}
@@ -14,9 +19,3 @@ export default function Square(props) {
         </button>
     );
 }
-
-Square.propTypes = {
-    value: PropTypes.string,
-    winner: PropTypes.bool,
-    onClick: PropTypes.func,
-};
