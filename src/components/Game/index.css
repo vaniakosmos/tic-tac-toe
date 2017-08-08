@@ -1,40 +1,40 @@
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
-    margin: 20px;
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
 }
 
 ol, ul {
-    padding-left: 30px;
+  padding-left: 30px;
 }
 
 a {
-    color: dodgerblue;
+  color: #ff7663;
 }
 
 a:hover {
-    color: #0b294f;
+  color: #fc1f00 !important;
 }
 
 a:visited {
-    color: dodgerblue;
+  color: #ff7663;
 }
 
 .game {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 .game-info {
-    font-family: "PT Mono", sans-serif;
-    margin-left: 20px;
-    width: 20rem;
+  font-family: "PT Mono", sans-serif;
+  margin-left: 20px;
+  width: 20rem;
 }
 
 .status {
-    margin-bottom: 10px;
-    margin-left: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
 }
 
 .selected {
-    font-weight: bold;
+  font-weight: bold;
 }
